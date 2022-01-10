@@ -42,13 +42,25 @@ type Descriptor struct {
 type Packer struct {
 	parentWorkDir string
 	builderPath   string
+	rafsVersion   string
 	sg            singleflight.Group
 }
 
-func New(parentWorkDir, builderPath string) (*Packer, error) {
+type Option struct {
+	WorkDir     string
+	BuilderPath string
+	RafsVersion string
+}
+
+func New(option Option) (*Packer, error) {
+	if option.RafsVersion == "" {
+		option.RafsVersion = "5"
+	}
+
 	return &Packer{
-		parentWorkDir: parentWorkDir,
-		builderPath:   builderPath,
+		parentWorkDir: option.WorkDir,
+		builderPath:   option.BuilderPath,
+		rafsVersion:   option.RafsVersion,
 	}, nil
 }
 
@@ -129,6 +141,7 @@ func (p *Packer) diffBuild(ctx context.Context, workDir string, layers []*BuildL
 		DiffSkipLayer:      diffSkip,
 
 		OutputJSONPath: outputJSONPath,
+		RafsVersion:    p.rafsVersion,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "build layers %v %v", diffPaths, diffHintPaths)
