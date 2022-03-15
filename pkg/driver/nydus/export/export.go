@@ -58,17 +58,26 @@ func Export(ctx context.Context, content content.Provider, layers []packer.Descr
 	finalLayer := layers[len(layers)-1]
 
 	// Append blob layers.
+	blobs := []string{}
 	for _, blobDesc := range finalLayer.Blobs {
 		layerDiffID := digest.Digest(blobDesc.Annotations[utils.LayerAnnotationUncompressed])
 		nydusConfig.RootFS.DiffIDs = append(nydusConfig.RootFS.DiffIDs, layerDiffID)
 		delete(blobDesc.Annotations, utils.LayerAnnotationUncompressed)
 		descs = append(descs, blobDesc)
+		blobs = append(blobs, blobDesc.Digest.Hex())
 	}
 
 	// Append bootstrap layer.
 	layerDiffID := digest.Digest(finalLayer.Bootstrap.Annotations[utils.LayerAnnotationUncompressed])
 	nydusConfig.RootFS.DiffIDs = append(nydusConfig.RootFS.DiffIDs, layerDiffID)
 	delete(finalLayer.Bootstrap.Annotations, utils.LayerAnnotationUncompressed)
+
+	// Append blobs to the annotation of bootstrap layer.
+	blobBytes, err := json.Marshal(blobs)
+	if err != nil {
+		return nil, errors.Wrap(err, "marshal blob list")
+	}
+	finalLayer.Bootstrap.Annotations[utils.LayerAnnotationNydusBlobIDs] = string(blobBytes)
 	descs = append(descs, finalLayer.Bootstrap)
 
 	nydusConfigDesc, nydusConfigBytes, err := utils.MarshalToDesc(nydusConfig, ocispec.MediaTypeImageConfig)
