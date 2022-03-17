@@ -43,6 +43,7 @@ type Packer struct {
 	parentWorkDir string
 	builderPath   string
 	rafsVersion   string
+	flatten       bool
 	sg            singleflight.Group
 }
 
@@ -50,6 +51,7 @@ type Option struct {
 	WorkDir     string
 	BuilderPath string
 	RafsVersion string
+	Flatten     bool
 	ChunkDict   *ChunkDict
 }
 
@@ -67,6 +69,7 @@ func New(option Option) (*Packer, error) {
 		parentWorkDir: option.WorkDir,
 		builderPath:   option.BuilderPath,
 		rafsVersion:   option.RafsVersion,
+		flatten:       option.Flatten,
 	}, nil
 }
 
@@ -237,7 +240,7 @@ func (p *Packer) Build(ctx context.Context, chunkDict *ChunkDict, layers []Layer
 	}
 	for idx := range buildLayers {
 		layer := buildLayers[idx]
-		if err := layer.mountWithLower(ctx); err != nil {
+		if err := layer.mountWithLower(ctx, p.flatten); err != nil {
 			return nil, errors.Wrap(err, "mount with lower layer")
 		}
 	}
