@@ -27,3 +27,9 @@ smoke: default
 
 # Run testing 
 test: default ut smoke
+
+release-image:
+	docker build -t goharbor/harbor-acceld -f script/release/Dockerfile .
+	docker run -v $(CWD)/misc/config/config.yaml.nydus.tmpl:/etc/acceld-config.yaml -it -d --rm -p 2077:2077 goharbor/harbor-acceld /etc/acceld-config.yaml
+	sleep 5
+	curl -f http://127.0.0.1:2077/api/v1/health
