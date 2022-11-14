@@ -46,6 +46,9 @@ converter:
       # https://github.com/dragonflyoss/image-service/releases (require v2.0.0 or higher)
       builder: nydus-image
 
+      # convert to OCI-referenced nydus image.
+      oci_ref: true
+
       # specify nydus format version, possible values: `5`, `6` (EROFS-compatible), default is `5`
       # fs_version: 5
 

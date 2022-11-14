@@ -3,7 +3,6 @@ module github.com/goharbor/acceleration-service
 go 1.18
 
 require (
-	github.com/aliyun/aliyun-oss-go-sdk v0.0.0-20190307165228-86c17b95fcd5
 	github.com/containerd/containerd v1.6.9
 	github.com/containerd/nydus-snapshotter v0.3.1
 	github.com/containerd/stargz-snapshotter v0.12.1
@@ -27,6 +26,7 @@ require (
 require (
 	github.com/Microsoft/go-winio v0.5.2 // indirect
 	github.com/Microsoft/hcsshim v0.9.4 // indirect
+	github.com/aliyun/aliyun-oss-go-sdk v0.0.0-20190307165228-86c17b95fcd5 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/astaxie/beego v1.12.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -99,3 +99,5 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
+
+replace github.com/containerd/nydus-snapshotter => github.com/imeoer/nydus-snapshotter v0.3.10
