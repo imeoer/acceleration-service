@@ -15,12 +15,12 @@
 package converter
 
 import (
-	"github.com/containerd/containerd"
+	"github.com/goharbor/acceleration-service/pkg/content"
 	"github.com/goharbor/acceleration-service/pkg/remote"
 )
 
 type ConvertOpts struct {
-	client       *containerd.Client
+	provider     content.Provider
 	driverType   string
 	driverConfig map[string]string
 	hosts        remote.HostFunc
@@ -28,9 +28,9 @@ type ConvertOpts struct {
 
 type ConvertOpt func(opts *ConvertOpts) error
 
-func WithClient(client *containerd.Client) ConvertOpt {
+func WithProvider(provider content.Provider) ConvertOpt {
 	return func(opts *ConvertOpts) error {
-		opts.client = client
+		opts.provider = provider
 		return nil
 	}
 }
@@ -39,13 +39,6 @@ func WithDriver(typ string, config map[string]string) ConvertOpt {
 	return func(opts *ConvertOpts) error {
 		opts.driverType = typ
 		opts.driverConfig = config
-		return nil
-	}
-}
-
-func WithHosts(hosts remote.HostFunc) ConvertOpt {
-	return func(opts *ConvertOpts) error {
-		opts.hosts = hosts
 		return nil
 	}
 }
