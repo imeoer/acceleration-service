@@ -51,6 +51,7 @@ type Driver struct {
 	chunkDictRef     string
 	mergeManifest    bool
 	ociRef           bool
+	disableTarToRafs bool
 	docker2oci       bool
 	alignedChunk     bool
 	chunkSize        string
@@ -136,6 +137,11 @@ func New(cfg map[string]string, platformMC platforms.MatchComparer) (*Driver, er
 		return nil, errors.Wrap(err, "invalid oci_ref option")
 	}
 
+	disableTarToRafs, err := parseBool(cfg["disable_tar2rafs"])
+	if err != nil {
+		return nil, errors.Wrap(err, "invalid disable_tar2rafs option")
+	}
+
 	if ociRef && fsVersion != "6" {
 		logrus.Warn("forcibly using fs version 6 when oci_ref option enabled")
 		fsVersion = "6"
@@ -149,6 +155,7 @@ func New(cfg map[string]string, platformMC platforms.MatchComparer) (*Driver, er
 		chunkDictRef:     chunkDictRef,
 		mergeManifest:    mergeManifest,
 		ociRef:           ociRef,
+		disableTarToRafs: disableTarToRafs,
 		docker2oci:       docker2oci,
 		alignedChunk:     fsAlignChunk,
 		chunkSize:        fsChunkSize,
@@ -204,6 +211,7 @@ func (d *Driver) convert(ctx context.Context, provider accelcontent.Provider, so
 		OCIRef:           d.ociRef,
 		AlignedChunk:     d.alignedChunk,
 		ChunkSize:        d.chunkSize,
+		WithTarToRafs:    !d.disableTarToRafs,
 	}
 	mergeOpt := nydusify.MergeOption{
 		WorkDir:          packOpt.WorkDir,
