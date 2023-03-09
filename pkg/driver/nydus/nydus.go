@@ -227,12 +227,12 @@ func (d *Driver) convert(ctx context.Context, provider accelcontent.Provider, so
 }
 
 func (d *Driver) makeManifestIndex(ctx context.Context, cs content.Store, oci, nydus ocispec.Descriptor) (*ocispec.Descriptor, error) {
-	ociDescs, err := utils.GetManifests(ctx, cs, oci)
+	ociDescs, err := utils.GetManifests(ctx, cs, oci, d.platformMC)
 	if err != nil {
 		return nil, errors.Wrap(err, "get oci image manifest list")
 	}
 
-	nydusDescs, err := utils.GetManifests(ctx, cs, nydus)
+	nydusDescs, err := utils.GetManifests(ctx, cs, nydus, d.platformMC)
 	if err != nil {
 		return nil, errors.Wrap(err, "get nydus image manifest list")
 	}
