@@ -80,7 +80,7 @@ func (cvt *Converter) pull(ctx context.Context, source string) error {
 	// Write a diff id label of layer in content store for simplifying
 	// diff id calculation to speed up the conversion.
 	// See: https://github.com/containerd/containerd/blob/e4fefea5544d259177abb85b64e428702ac49c97/images/diffid.go#L49
-	if err := utils.UpdateLayerDiffID(ctx, cvt.provider.ContentStore(), *image); err != nil {
+	if err := utils.UpdateLayerDiffID(ctx, cvt.provider.ContentStore(), *image, cvt.platformMC); err != nil {
 		return errors.Wrap(err, "update layer diff id")
 	}
 
