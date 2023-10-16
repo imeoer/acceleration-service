@@ -105,6 +105,7 @@ jobs:
       - name: Install hub Command
         run: |
           sudo apt install -y hub
+          rm ~/.config/hub
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
